@@ -1,15 +1,14 @@
-# NovaWorks PM - AI Meeting to Project CRM
+# GENESIS PM - AI Meeting to Project CRM
 
 > AI-powered Project Management CRM for NovaWorks Technologies that automates the conversion of raw meeting transcripts into structured client projects, manager assignments, and developer task allocations with strict role-based access control.
 
 ## Team
-- **Team name**: NovaWorks Hackers
+- **Team name**: GENESIS
 - **Responsibilities**:
   - Member 1: AI Prompt Engineering & Groq Pipeline Integration
   - Member 2: Backend Architecture, Auth (JWT/Bcrypt) & RBAC Access Layer
-  - Member 3: Next.js Frontend Components & Dynamic Role UI
-  - Member 4: Database Modeling (Prisma/SQLite), Testing & Documentation
-- **Repository**: [GitHub Repository URL]
+  - Member 3: Next.js Frontend Components & Dynamic Role UI & GUI
+- **Repository**: https://github.com/Anas-Shakir/infinity_hack
 
 ## What Works
 - **Seeded Demo Accounts**: 10 pre-configured accounts (1 Administrator, 3 Project Managers, 6 Developer Agents) with idempotent seeder script (`npm run seed`).
@@ -48,7 +47,7 @@
 
 1. **Clone this repository and enter its directory**:
    ```sh
-   git clone <YOUR_REPOSITORY_URL>
+   git clone https://github.com/Anas-Shakir/infinity_hack
    cd infinity_hack
    ```
 
