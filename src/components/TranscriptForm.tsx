@@ -82,7 +82,7 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
 
       setCreatedProjects(data.projects || []);
       setTotals(data.totals || null);
-    } catch (err) {
+    } catch {
       setErrorMessage("Network or connection error. Please try again.");
     } finally {
       setIsLoading(false);
@@ -92,9 +92,9 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
   return (
     <div className="space-y-6">
       {/* Form Area */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-[#e7e9ed] p-6 sm:p-7 shadow-clickup-sm space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <label htmlFor="transcript" className="block text-sm font-bold text-slate-800">
+          <label htmlFor="transcript" className="block text-sm font-bold text-[#1a1a1a]">
             Meeting Transcript / Notes
           </label>
           <div className="flex items-center gap-2">
@@ -102,9 +102,9 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
               type="button"
               onClick={handleLoadSample}
               disabled={isLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/60 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#4617a8]/10 text-[#4617a8] hover:bg-[#4617a8]/15 border border-[#4617a8]/25 transition-colors"
             >
-              <FileText className="w-3.5 h-3.5" />
+              <FileText className="w-3.5 h-3.5 text-[#4617a8]" />
               Load Sample Transcript
             </button>
             {transcript && (
@@ -112,7 +112,7 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
                 type="button"
                 onClick={handleClear}
                 disabled={isLoading}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-gray-500 hover:text-[#1a1a1a] hover:bg-[#f3f4f8] transition-colors"
               >
                 <RotateCcw className="w-3 h-3" />
                 Clear
@@ -129,28 +129,28 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
             onChange={(e) => setTranscript(e.target.value)}
             disabled={isLoading}
             placeholder="Paste raw meeting transcript here, or click 'Load Sample Transcript' above..."
-            className="w-full font-mono text-xs sm:text-sm p-4 rounded-xl border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200/50 outline-none transition-all placeholder:font-sans placeholder:text-slate-400 bg-slate-50/50 focus:bg-white leading-relaxed"
+            className="w-full font-mono text-xs sm:text-sm p-4 rounded-xl border border-[#e7e9ed] focus:border-[#4617a8] focus:ring-2 focus:ring-[#4617a8]/20 outline-none transition-all placeholder:font-sans placeholder:text-gray-400 bg-[#f8f9fb] focus:bg-white leading-relaxed text-[#1a1a1a]"
           />
         </div>
 
         <div className="flex items-center justify-between pt-2">
-          <span className="text-xs text-slate-500">
-            {transcript ? `${transcript.length} characters` : "No transcript loaded"}
+          <span className="text-xs text-gray-400 font-medium">
+            {transcript ? `${transcript.length.toLocaleString()} characters` : "No transcript loaded"}
           </span>
 
           <button
             type="submit"
             disabled={isLoading || !transcript.trim()}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-brand-600 hover:from-indigo-700 hover:to-brand-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transition-all"
+            className="genesis-btn-primary inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
                 <span>AI is reading the meeting...</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4 text-white" />
                 <span>Create from Transcript</span>
               </>
             )}
@@ -169,7 +169,7 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
 
       {/* Success View */}
       {createdProjects && createdProjects.length > 0 && (
-        <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-6 shadow-sm animate-in fade-in duration-300 space-y-5">
+        <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-6 shadow-clickup-sm space-y-5 animate-in fade-in duration-300">
           <div className="flex items-start gap-3">
             <CheckCircle className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-0.5" />
             <div>
@@ -186,20 +186,20 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
             {createdProjects.map((proj) => (
               <div
                 key={proj.id}
-                className="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex flex-col justify-between"
+                className="bg-white p-4 rounded-xl border border-emerald-100 shadow-clickup-sm flex flex-col justify-between"
               >
                 <div>
-                  <div className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 mb-1">
-                    <Building className="w-3 h-3 text-slate-400" />
+                  <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1a1a1a]/60 mb-1">
+                    <Building className="w-3 h-3 text-[#4617a8]" />
                     <span>{proj.clientName}</span>
                   </div>
-                  <h4 className="font-bold text-slate-900 text-sm">{proj.name}</h4>
-                  <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
+                  <h4 className="font-bold text-[#1a1a1a] text-sm">{proj.name}</h4>
+                  <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
                     <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
+                      <Calendar className="w-3 h-3 text-gray-400" />
                       {proj.deadline}
                     </span>
-                    <span className="flex items-center gap-1 font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                    <span className="flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/50">
                       <Layers className="w-3 h-3" />
                       {proj.taskCount} tasks
                     </span>
@@ -208,7 +208,7 @@ export default function TranscriptForm({ sampleTranscript }: TranscriptFormProps
 
                 <Link
                   href={`/projects/${proj.id}`}
-                  className="mt-4 inline-flex items-center justify-between text-xs font-bold text-indigo-600 hover:text-indigo-800 pt-2 border-t border-slate-100"
+                  className="mt-4 inline-flex items-center justify-between text-xs font-bold text-[#4617a8] hover:text-[#381289] pt-2 border-t border-[#f0f2f5]"
                 >
                   <span>View Project Details</span>
                   <ArrowRight className="w-3.5 h-3.5" />

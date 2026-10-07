@@ -29,24 +29,26 @@ export default async function ProjectsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between pb-6 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#e7e9ed]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <FolderGit2 className="w-8 h-8 text-brand-600" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a1a] tracking-tight flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#4617a8]/10 text-[#4617a8] flex items-center justify-center">
+              <FolderGit2 className="w-5 h-5 text-[#4617a8]" />
+            </div>
             <span>{pageTitle}</span>
           </h1>
-          <p className="text-sm text-slate-500 mt-1">{pageDesc}</p>
+          <p className="text-xs sm:text-sm text-[#1a1a1a]/60 mt-1">{pageDesc}</p>
         </div>
-        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+        <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#4617a8]/10 text-[#4617a8] border border-[#4617a8]/20 w-fit">
           {projects.length} {projects.length === 1 ? "Project" : "Projects"}
         </span>
       </div>
 
       {projects.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-2xl border border-dashed border-slate-300">
-          <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-          <h3 className="text-base font-bold text-slate-800">No projects visible</h3>
-          <p className="text-xs text-slate-500 mt-1">
+        <div className="p-12 text-center bg-white rounded-3xl border border-dashed border-[#e7e9ed] shadow-clickup-sm">
+          <AlertCircle className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+          <h3 className="text-base font-bold text-[#1a1a1a]">No projects visible</h3>
+          <p className="text-xs sm:text-sm text-[#1a1a1a]/60 mt-1">
             There are no projects available matching your role permissions.
           </p>
         </div>

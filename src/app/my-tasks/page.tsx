@@ -52,23 +52,25 @@ export default async function MyTasksPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#e7e9ed]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <CheckSquare className="w-8 h-8 text-emerald-600" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a1a] tracking-tight flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#4617a8]/10 text-[#4617a8] flex items-center justify-center">
+              <CheckSquare className="w-5 h-5 text-[#4617a8]" />
+            </div>
             <span>My Assigned Tasks</span>
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Personal task list for <span className="font-semibold text-slate-700">{user.name}</span> across all assigned client engagements.
+          <p className="text-xs sm:text-sm text-[#1a1a1a]/60 mt-1">
+            Personal task list for <span className="font-bold text-[#4617a8]">{user.name}</span> across all assigned client engagements.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-emerald-600" />
+        <div className="flex items-center gap-2.5">
+          <div className="px-3.5 py-1.5 rounded-xl bg-[#ff6600]/10 border border-[#ff6600]/25 text-[#ff6600] text-xs font-bold flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5" />
             <span>{totalEffort} hrs allocated</span>
           </div>
-          <div className="px-3.5 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold">
+          <div className="px-3.5 py-1.5 rounded-xl bg-[#4617a8]/10 border border-[#4617a8]/20 text-[#4617a8] text-xs font-bold">
             {tasks.length} {tasks.length === 1 ? "Task" : "Tasks"}
           </div>
         </div>
@@ -76,49 +78,47 @@ export default async function MyTasksPage() {
 
       {/* Grouped Projects View */}
       {groupedProjects.length === 0 ? (
-        <div className="p-16 text-center bg-white rounded-3xl border border-dashed border-slate-300">
-          <AlertCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-slate-800">No tasks assigned</h3>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto mt-1">
+        <div className="p-16 text-center bg-white rounded-3xl border border-dashed border-[#e7e9ed] shadow-clickup-sm">
+          <AlertCircle className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-[#1a1a1a]">No tasks assigned</h3>
+          <p className="text-xs sm:text-sm text-[#1a1a1a]/60 max-w-sm mx-auto mt-1">
             You do not have any tasks currently assigned to your account.
           </p>
         </div>
       ) : (
         <div className="space-y-8">
           {groupedProjects.map((group) => {
-            const groupHours = group.tasks.reduce((sum, t) => sum + t.estimatedHours, 0);
-
             return (
               <div
                 key={group.projectId}
-                className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden"
+                className="bg-white rounded-3xl border border-[#e7e9ed] shadow-clickup-sm overflow-hidden"
               >
                 {/* Project Subheader */}
-                <div className="p-5 sm:p-6 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-5 sm:p-6 bg-[#f8f9fb] border-b border-[#e7e9ed] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600">
-                      <Building className="w-3.5 h-3.5 text-slate-400" />
+                    <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1a1a1a]/60">
+                      <Building className="w-3.5 h-3.5 text-[#4617a8]" />
                       <span>{group.clientName}</span>
                     </div>
-                    <h2 className="text-lg font-bold text-slate-900">
+                    <h2 className="text-base sm:text-lg font-bold text-[#1a1a1a]">
                       {group.projectName}
                     </h2>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#1a1a1a]/70">
                     <div className="flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-slate-400" />
-                      <span>PM: <strong>{group.managerName}</strong></span>
+                      <User className="w-3.5 h-3.5 text-gray-400" />
+                      <span>PM: <strong className="text-[#1a1a1a]">{group.managerName}</strong></span>
                     </div>
                     {group.projectDeadline && (
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        <span>Project Due: <strong>{group.projectDeadline}</strong></span>
+                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                        <span>Project Due: <strong className="text-[#1a1a1a]">{group.projectDeadline}</strong></span>
                       </div>
                     )}
                     <Link
                       href={`/projects/${group.projectId}`}
-                      className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-bold transition-colors"
+                      className="inline-flex items-center gap-1 text-[#4617a8] hover:text-[#381289] font-bold transition-colors"
                     >
                       <span>Project View</span>
                       <ArrowRight className="w-3.5 h-3.5" />

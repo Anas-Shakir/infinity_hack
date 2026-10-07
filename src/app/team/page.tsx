@@ -40,17 +40,19 @@ export default async function TeamPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between pb-6 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#e7e9ed]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
-            <Users className="w-8 h-8 text-indigo-600" />
-            <span>NovaWorks Team Directory</span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1a1a1a] tracking-tight flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#4617a8]/10 text-[#4617a8] flex items-center justify-center">
+              <Users className="w-5 h-5 text-[#4617a8]" />
+            </div>
+            <span>Genesis Team Directory</span>
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-[#1a1a1a]/60 mt-1">
             Read-only directory of project managers, developer agents, and administrators.
           </p>
         </div>
-        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+        <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#4617a8]/10 text-[#4617a8] border border-[#4617a8]/20 w-fit">
           {team.length} Team Members
         </span>
       </div>
