@@ -4,7 +4,7 @@
 
 ## Team
 - Team name: GENESIS
-- Four members and responsibilities: ANAS SHAKIR (FA25-BSE-216), BASIL MUSTAFA (FA25-BSE-167), TAHA ALI (FA25-BSE-164)
+- Four members and responsibilities: ANAS SHAKIR (FA25-BSE-216), BASIL MUSTAFA (FA25-BSE-167), TAHA ALI (FA25-BSE-164).
 - Repository: https://github.com/Anas-Shakir/infinity_hack
 
 ## What Works
