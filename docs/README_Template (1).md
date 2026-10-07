@@ -3,17 +3,17 @@
 > Participant template: replace every bracketed placeholder with your actual project details. Commands below are placeholders, not commands for a specific stack. Save the completed file as `README.md` at your repository root.
 
 ## Team
-- Team name: [name]
-- Four members and responsibilities: [names and responsibilities]
-- Repository: [GitHub URL]
+- Team name: GENESIS
+- Four members and responsibilities: ANAS SHAKIR (FA25-BSE-216), BASIL MUSTAFA (FA25-BSE-167), TAHA ALI (FA25-BSE-164)
+- Repository: https://github.com/Anas-Shakir/infinity_hack
 
 ## What Works
 [Briefly describe the CRM, seeded login, admin transcript automation, manager project view, agent task view, and saved records. Mark incomplete features honestly.]
 
 ## Technology Stack
-- Frontend: [framework and version]
-- Backend: [framework/runtime and version]
-- Database: [engine and version]
+- Frontend: NEXT JS
+- Backend: NODE JS
+- Database: POSTGRESS
 - AI: [provider and model]
 - Authentication/session approach: [brief explanation]
 
