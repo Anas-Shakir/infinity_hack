@@ -91,16 +91,13 @@ export default function LoginPage() {
 
       // Role-based redirect
       const role = data.user.role;
-      if (role === "ADMIN") {
-        router.push("/");
-      } else if (role === "MANAGER") {
-        router.push("/projects");
+      let target = "/";
+      if (role === "MANAGER") {
+        target = "/projects";
       } else if (role === "AGENT") {
-        router.push("/my-tasks");
-      } else {
-        router.push("/");
+        target = "/my-tasks";
       }
-      router.refresh();
+      window.location.href = target;
     } catch {
       setError("Unable to connect to server. Please try again.");
       setIsLoading(false);
