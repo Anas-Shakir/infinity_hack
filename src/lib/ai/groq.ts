@@ -3,7 +3,6 @@ import { SYSTEM_PROMPT, buildUserPrompt, DirectoryUser } from "./prompt";
 
 function cleanJsonString(str: string): string {
   let cleaned = str.trim();
-  // Remove markdown code blocks if present
   if (cleaned.startsWith("```json")) {
     cleaned = cleaned.substring(7);
   } else if (cleaned.startsWith("```")) {
@@ -15,6 +14,15 @@ function cleanJsonString(str: string): string {
   return cleaned.trim();
 }
 
+const FALLBACK_MODELS = [
+  process.env.GROQ_MODEL,
+  "llama-3.1-70b-versatile",
+  "llama-3.3-70b-versatile",
+  "llama-3.1-8b-instant",
+  "llama3-70b-8192",
+  "mixtral-8x7b-32768",
+].filter(Boolean) as string[];
+
 export async function callGroqAI(directory: DirectoryUser[], transcript: string): Promise<unknown> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
@@ -23,15 +31,17 @@ export async function callGroqAI(directory: DirectoryUser[], transcript: string)
 
   const groq = new Groq({
     apiKey,
-    timeout: 60000, // 60s timeout
+    timeout: 45000,
   });
 
-  const model = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
   const userPrompt = buildUserPrompt(directory, transcript);
 
   let lastError: Error | null = null;
-  // Try up to 2 times for robust AI response parsing
-  for (let attempt = 1; attempt <= 2; attempt++) {
+
+  // Deduplicate model list
+  const modelsToTry = Array.from(new Set(FALLBACK_MODELS));
+
+  for (const model of modelsToTry) {
     try {
       const completion = await groq.chat.completions.create({
         model,
@@ -52,15 +62,21 @@ export async function callGroqAI(directory: DirectoryUser[], transcript: string)
       const parsed = JSON.parse(cleaned);
       return parsed;
     } catch (err: unknown) {
-      const error = err as Error & { status?: number };
+      const error = err as Error & { status?: number; code?: string };
       lastError = error;
+
+      // If model not found (404), try next model in fallback list
+      if (error?.status === 404 || error?.message?.includes("model_not_found")) {
+        console.warn(`Groq model ${model} not available (404), trying next model...`);
+        continue;
+      }
+
       if (error?.status === 429) {
-        throw new Error("AI service is currently busy (Rate limited). Please wait a moment and try again.");
+        throw new Error("AI service is currently busy (Rate limited). Please wait a moment and retry.");
       }
-      if (attempt === 1) {
-        // Wait 1 second before 2nd attempt
-        await new Promise((res) => setTimeout(res, 1000));
-      }
+
+      // If other error, throw
+      break;
     }
   }
 
