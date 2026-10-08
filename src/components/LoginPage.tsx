@@ -4,11 +4,13 @@ import { FormEvent, useEffect, useState } from "react";
 import { useApp } from "./AppProvider";
 import { DEMO_PASSWORD, DEMO_USERS } from "@/lib/data";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { FloatingWorkspaceArt } from "./FloatingWorkspaceArt";
 
 export function LoginPage() {
   const { user, login } = useApp();
   const router = useRouter();
-  const [email, setEmail] = useState("admin@novaworks.example");
+  const [email, setEmail] = useState("admin@genesis.example");
   const [password, setPassword] = useState(DEMO_PASSWORD);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,15 +32,12 @@ export function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-visual">
-        <div className="brand-mark">N</div>
-        <p className="eyebrow">Delivery intelligence, simplified</p>
+        <FloatingWorkspaceArt />
         <h1>Turn meeting conversations into clear project plans.</h1>
-        <p className="visual-copy">A focused workspace for project managers to turn client conversations into actionable delivery work.</p>
-        <div className="visual-stat"><strong>3</strong><span>projects<br />12 tasks</span></div>
       </section>
       <section className="login-panel">
         <div className="login-card">
-          <div className="logo-row"><div className="brand-mark small">N</div><strong>NovaWorks <em>PM</em></strong></div>
+          <div className="logo-row"><Image className="genesis-logo" src="/logo_main.png" alt="Genesis" width={335} height={110} priority /></div>
           <p className="eyebrow">Welcome back</p>
           <h2>Sign in to your workspace</h2>
           <form onSubmit={submit}>

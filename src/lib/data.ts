@@ -1,16 +1,16 @@
 import type { Project, User } from "./types";
 
 export const DEMO_USERS: User[] = [
-  { id: "ADMIN", name: "Admin", email: "admin@novaworks.example", role: "ADMIN", specialization: "Administrator" },
-  { id: "PM01", name: "Ayesha Khan", email: "ayesha@novaworks.example", role: "MANAGER", specialization: "Web Project Manager" },
-  { id: "PM02", name: "Bilal Ahmed", email: "bilal@novaworks.example", role: "MANAGER", specialization: "Mobile Project Manager" },
-  { id: "PM03", name: "Hina Malik", email: "hina@novaworks.example", role: "MANAGER", specialization: "AI Project Manager" },
-  { id: "DEV01", name: "Ali Raza", email: "ali@novaworks.example", role: "AGENT", specialization: "Full-stack Developer" },
-  { id: "DEV02", name: "Hamza Shah", email: "hamza@novaworks.example", role: "AGENT", specialization: "Backend Developer" },
-  { id: "DEV03", name: "Sara Noor", email: "sara@novaworks.example", role: "AGENT", specialization: "Mobile Developer" },
-  { id: "DEV04", name: "Usman Tariq", email: "usman@novaworks.example", role: "AGENT", specialization: "Mobile Developer" },
-  { id: "DEV05", name: "Zain Abbas", email: "zain@novaworks.example", role: "AGENT", specialization: "AI Developer" },
-  { id: "DEV06", name: "Maryam Asif", email: "maryam@novaworks.example", role: "AGENT", specialization: "AI Developer" },
+  { id: "ADMIN", name: "Admin", email: "admin@genesis.example", role: "ADMIN", specialization: "Administrator" },
+  { id: "PM01", name: "Ayesha Khan", email: "ayesha@genesis.example", role: "MANAGER", specialization: "Web Project Manager" },
+  { id: "PM02", name: "Bilal Ahmed", email: "bilal@genesis.example", role: "MANAGER", specialization: "Mobile Project Manager" },
+  { id: "PM03", name: "Hina Malik", email: "hina@genesis.example", role: "MANAGER", specialization: "AI Project Manager" },
+  { id: "DEV01", name: "Ali Raza", email: "ali@genesis.example", role: "AGENT", specialization: "Full-stack Developer" },
+  { id: "DEV02", name: "Hamza Shah", email: "hamza@genesis.example", role: "AGENT", specialization: "Backend Developer" },
+  { id: "DEV03", name: "Sara Noor", email: "sara@genesis.example", role: "AGENT", specialization: "Mobile Developer" },
+  { id: "DEV04", name: "Usman Tariq", email: "usman@genesis.example", role: "AGENT", specialization: "Mobile Developer" },
+  { id: "DEV05", name: "Zain Abbas", email: "zain@genesis.example", role: "AGENT", specialization: "AI Developer" },
+  { id: "DEV06", name: "Maryam Asif", email: "maryam@genesis.example", role: "AGENT", specialization: "AI Developer" },
 ];
 
 export const DEMO_PASSWORD = "Demo123!";

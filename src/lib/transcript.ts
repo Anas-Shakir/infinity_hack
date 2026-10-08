@@ -1,7 +1,7 @@
 import { DEMO_PROJECTS, DEMO_USERS } from "./data";
 import type { Project } from "./types";
 
-export const SAMPLE_TRANSCRIPT = `NovaWorks Client Delivery Planning — 7 October 2026
+export const SAMPLE_TRANSCRIPT = `Genesis Client Delivery Planning — 7 October 2026
 
 UrbanCart Clothing: The team agreed to build a product catalog website and a demo cart. The final scope is a product catalog UI, demo cart UI, product and cart APIs, and website integration and testing. The client wants the site ready by October 20. The deadline was initially October 18, but the final agreed deadline is October 20. Ali will own the frontend work, Hamza will own the APIs, and Ali will own integration and testing. The final scope excludes real payments and inventory integration.
 
@@ -13,11 +13,11 @@ Final recap: UrbanCart is October 20, QuickServe is October 24, and HelpDeskPro 
 
 export interface TranscriptResult {
   projects: Project[];
-  source: "grok" | "fallback";
+  source: "groq" | "fallback";
   message?: string;
 }
 
-interface GrokProject {
+interface GroqProject {
   name: string;
   clientName: string;
   description: string;
@@ -26,15 +26,52 @@ interface GrokProject {
   tasks: Array<{ title: string; description: string; assigneeId: string; deadline: string; estimatedHours: number }>;
 }
 
-interface GrokResponse { projects: GrokProject[] }
+interface GroqResponse { projects: GroqProject[] }
 
 function normalize(value: string) {
   return value.replace(/[^a-z0-9]/gi, "").toLowerCase();
 }
 
-function findUser(name: string) {
+function findUser(name: unknown) {
+  if (typeof name !== "string" || !name.trim()) return undefined;
   const normalized = normalize(name);
   return DEMO_USERS.find((user) => normalize(user.name) === normalized || normalize(user.name.split(" ")[0]) === normalized);
+}
+
+function parseGroqResponse(raw: string): GroqResponse {
+  const parsed: unknown = JSON.parse(raw.replace(/^```json|```$/gi, "").trim());
+  if (typeof parsed !== "object" || parsed === null || !("projects" in parsed) || !Array.isArray(parsed.projects)) {
+    throw new Error("Groq returned an invalid response: expected a projects array.");
+  }
+  for (const [projectIndex, project] of parsed.projects.entries()) {
+    if (typeof project !== "object" || project === null) {
+      throw new Error(`Groq returned an invalid project at position ${projectIndex + 1}.`);
+    }
+    const candidate = project as Record<string, unknown>;
+    for (const field of ["name", "clientName", "description", "managerId", "deadline"] as const) {
+      if (typeof candidate[field] !== "string" || !candidate[field].trim()) {
+        throw new Error(`Groq omitted "${field}" for project ${projectIndex + 1}. Check the model response format.`);
+      }
+    }
+    if (!Array.isArray(candidate.tasks)) {
+      throw new Error(`Groq omitted the tasks list for project ${projectIndex + 1}. Check the model response format.`);
+    }
+    for (const [taskIndex, task] of candidate.tasks.entries()) {
+      if (typeof task !== "object" || task === null) {
+        throw new Error(`Groq returned an invalid task at position ${taskIndex + 1} in project ${projectIndex + 1}.`);
+      }
+      const taskCandidate = task as Record<string, unknown>;
+      for (const field of ["title", "description", "assigneeId", "deadline"] as const) {
+        if (typeof taskCandidate[field] !== "string" || !taskCandidate[field].trim()) {
+          throw new Error(`Groq omitted "${field}" for task ${taskIndex + 1} in project ${projectIndex + 1}. Check the model response format.`);
+        }
+      }
+      if (typeof taskCandidate.estimatedHours !== "number" || !Number.isFinite(taskCandidate.estimatedHours)) {
+        throw new Error(`Groq returned an invalid estimatedHours for task ${taskIndex + 1} in project ${projectIndex + 1}.`);
+      }
+    }
+  }
+  return parsed as GroqResponse;
 }
 
 function fallbackFromTranscript(transcript: string): Project[] {
@@ -45,12 +82,12 @@ function fallbackFromTranscript(transcript: string): Project[] {
   return DEMO_PROJECTS.map((project) => ({ ...project, tasks: project.tasks.map((task) => ({ ...task })) }));
 }
 
-async function callGrok(transcript: string): Promise<GrokResponse> {
-  const apiKey = process.env.GROK_API_KEY;
-  const model = process.env.GROK_MODEL ?? "grok-3-mini";
-  if (!apiKey) throw new Error("Grok API key is not configured");
+async function callGroq(transcript: string): Promise<GroqResponse> {
+  const apiKey = process.env.GROQ_API_KEY ?? process.env.GROK_API_KEY;
+  const model = process.env.GROQ_MODEL ?? process.env.GROK_MODEL ?? "llama-3.3-70b-versatile";
+  if (!apiKey) throw new Error("Groq API key is not configured. Set GROQ_API_KEY in .env.");
 
-  const response = await fetch("https://api.x.ai/v1/chat/completions", {
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     signal: AbortSignal.timeout(60000),
@@ -66,17 +103,35 @@ async function callGrok(transcript: string): Promise<GrokResponse> {
     }),
   });
 
-  if (!response.ok) throw new Error(`Grok request failed: ${response.status}`);
+  if (!response.ok) {
+    let providerMessage = "";
+    try {
+      const payload = await response.json() as { error?: { message?: string } };
+      providerMessage = payload.error?.message ?? "";
+    } catch {
+      providerMessage = "";
+    }
+    if (response.status === 400 || response.status === 404) {
+      throw new Error(`Groq rejected the model or request (HTTP ${response.status})${providerMessage ? `: ${providerMessage}` : ". Check GROQ_MODEL and the request format."}`);
+    }
+    if (response.status === 401 || response.status === 403) {
+      throw new Error(`Groq rejected the API key (HTTP ${response.status}). Check GROQ_API_KEY in .env.`);
+    }
+    if (response.status === 429) {
+      throw new Error(`The Groq account has reached its rate or usage limit${providerMessage ? `: ${providerMessage}` : ". Check your Groq account limits and try again."}`);
+    }
+    throw new Error(`The Groq service returned HTTP ${response.status}${providerMessage ? `: ${providerMessage}` : ". Try again later."}`);
+  }
   const payload = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
   const raw = payload.choices?.[0]?.message?.content;
-  if (!raw) throw new Error("Grok returned no content");
-  return JSON.parse(raw.replace(/^```json|```$/gi, "").trim()) as GrokResponse;
+  if (!raw) throw new Error("Groq returned no content");
+  return parseGroqResponse(raw);
 }
 
 export async function extractTranscript(transcript: string): Promise<TranscriptResult> {
   if (!transcript.trim()) throw new Error("Paste a meeting transcript first.");
   try {
-    const result = await callGrok(transcript);
+    const result = await callGroq(transcript);
     const projects = result.projects.map((project, index) => ({
       id: `generated-${index}-${Date.now()}`,
       name: project.name,
@@ -95,11 +150,16 @@ export async function extractTranscript(transcript: string): Promise<TranscriptR
         estimatedHours: Number(task.estimatedHours),
       })),
     }));
-    if (!projects.length) throw new Error("Grok did not return any projects.");
-    return { projects, source: "grok" };
+    if (!projects.length) throw new Error("Groq did not return any projects.");
+    return { projects, source: "groq" };
   } catch (error) {
     const projects = fallbackFromTranscript(transcript);
-    if (projects.length) return { projects, source: "fallback", message: "Grok was unavailable, so the demo transcript was used." };
-    throw new Error("The AI service could not process this transcript. Please try again.");
+    if (projects.length) {
+      console.warn("Groq could not process the sample transcript; using demo projects.", error);
+      return { projects, source: "fallback", message: "Groq was unavailable, so the demo transcript was used." };
+    }
+    console.error("Transcript extraction failed.", error);
+    if (error instanceof Error) throw error;
+    throw new Error("Transcript extraction failed for an unknown reason.");
   }
 }

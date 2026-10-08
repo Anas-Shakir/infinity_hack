@@ -16,6 +16,18 @@ export interface Task {
   assignee: string;
   deadline: string;
   estimatedHours: number;
+  completed?: boolean;
+  clientId?: string | null;
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  industry: string;
+  representativeName: string;
+  representativePhone: string;
+  managerId: string;
+  manager: string;
 }
 
 export interface Project {
@@ -27,4 +39,5 @@ export interface Project {
   manager: string;
   deadline: string;
   tasks: Task[];
+  closed?: boolean;
 }
