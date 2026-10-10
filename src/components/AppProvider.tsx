@@ -240,7 +240,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Sign Up / Create Account via Supabase Auth
+  // Sign Up / Create Account via Server Route (immune to Supabase SMTP rate limits)
   const signup = async ({
     name,
     email,
@@ -255,45 +255,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     specialization: string;
   }) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: {
-            name: name.trim(),
-            role,
-            specialization: specialization.trim(),
-          },
-        },
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+          role,
+          specialization: specialization.trim(),
+        }),
       });
 
-      if (error || !data.user) {
-        return { ok: false, message: error?.message || "Failed to create account." };
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        return { ok: false, message: result.error || "Failed to create account." };
       }
 
-      // Create profile in public.profiles table
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: data.user.id,
-        name: name.trim(),
-        email: email.trim(),
-        role,
-        specialization: specialization.trim() || (role === "ADMIN" ? "Administrator" : role === "MANAGER" ? "Project Manager" : "Team Member"),
-      }, { onConflict: "id" });
-
-      if (profileError) {
-        console.warn("Profile creation warning:", profileError.message);
+      // Auto sign-in immediately after account creation
+      const loginResult = await login(email, password);
+      if (!loginResult.ok) {
+        return {
+          ok: true,
+          message: "Account created successfully! Please sign in with your credentials.",
+        };
       }
 
-      if (data.session) {
-        await loadUserProfile(data.user.id, data.user.email);
-        await fetchData();
-        return { ok: true };
-      }
-
-      return {
-        ok: true,
-        message: "Account created successfully! You can now sign in with your credentials.",
-      };
+      return { ok: true };
     } catch (err) {
       return {
         ok: false,
